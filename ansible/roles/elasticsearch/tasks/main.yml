@@ -1,0 +1,24 @@
+---
+
+- name: Get OS environment
+  shell: uname -s
+  register: unames
+
+- name: Get processor type (32 or 64 bit)
+  shell: uname -m
+  register: unamem
+
+- name: Download tar ball
+  get_url:
+    url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ version }}-{{ unames }}-{{ unamem }}.tar.gz
+    dest: /tmp/
+    checksum: sha512:57b9506b773ec18ea78466c89a8c42d6d3ab6e96a5a0d994f511322136baac0ffc14e428cb276898bf6150e9393b8bb24da1ad3f20c3d1406a2c34d0a32d5ada
+
+- name: Extract tar ball
+  become: yes
+  unarchive:
+    src: /tmp/elasticsearch-{{ version }}-{{ unames }}-{{ unamem }}.tar.gz
+    dest: /usr/bin/
+    owner: vagrant
+    group: vagrant
+    remote_src: yes
